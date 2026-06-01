@@ -1,0 +1,68 @@
+# solar-system-db — public hosting stack
+#
+# Brings up:
+#   * rest-api    — FastAPI (port 8003), read-only REST/JSON over the catalogue
+#   * mcp-server  — FastMCP streamable-HTTP (port 8002) for remote MCP clients
+#   * caddy       — reverse proxy on :80/:443 routing /api, /docs, /mcp, /
+#
+# The SQLite DB lives at ./data/solar_system.sqlite, mounted read-only into
+# both backend services. The GitHub Actions nightly job commits a new DB to
+# main; on the host, scripts/pull_latest.sh does a `git pull` and recycles
+# the two services so they pick up the new file.
+
+services:
+  rest-api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: solar-rest-api
+    restart: unless-stopped
+    environment:
+      - SOLAR_DB_PATH=/data/solar_system.sqlite
+      - API_HOST=0.0.0.0
+      - API_PORT=8003
+    volumes:
+      - ./data:/data:ro
+    expose:
+      - "8003"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8003/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mcp-server:
+    build:
+      context: .
+      dockerfile: mcp-server/Dockerfile
+    container_name: solar-mcp-server
+    restart: unless-stopped
+    environment:
+      - SOLAR_DB_PATH=/data/solar_system.sqlite
+      - MCP_TRANSPORT=http
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8002
+    volumes:
+      - ./data:/data:ro
+    expose:
+      - "8002"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: solar-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./web:/srv:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - rest-api
+      - mcp-server
+
+volumes:
+  caddy_data:
+  caddy_config:

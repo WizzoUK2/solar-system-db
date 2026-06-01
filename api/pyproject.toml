@@ -1,0 +1,26 @@
+[project]
+name = "solar-system-db-api"
+version = "0.1.0"
+description = "Read-only REST API for the solar-system-db catalogue (astronomy)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "slowapi>=0.1.9",
+    "solar-system-db",
+]
+
+[project.scripts]
+solar-system-db-api = "main:run"
+
+[tool.uv.sources]
+solar-system-db = { path = "..", editable = true }
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["main"]

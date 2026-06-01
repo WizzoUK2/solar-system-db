@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# SQLite WAL / journal — keep the main .sqlite committed
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Caches
+.ruff_cache/
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+
+# Transient build/test artifacts
+solar_system_db.egg-info/
+solar-system-db.egg-info/
+.pytest_cache/
+pytest-cache-files-*/

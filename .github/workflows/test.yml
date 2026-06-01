@@ -1,0 +1,35 @@
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install -e ./mcp-server
+          pip install -e ./api
+          pip install pytest httpx
+
+      - name: Verify DB
+        run: python scripts/verify.py
+
+      - name: Smoke tests — MCP server + REST API
+        run: pytest mcp-server/tests/ api/tests/ -v --import-mode=importlib

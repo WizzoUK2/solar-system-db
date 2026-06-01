@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>solar-system-db — a catalogue of known solar-system objects</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Queryable catalogue of known solar-system objects — planets, moons, dwarf planets, asteroids, comets, TNOs, centaurs, rings. For astronomy, not astrology.">
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+         max-width: 720px; margin: 40px auto; padding: 0 20px;
+         color: #1a1a1a; background: #fafafa; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e8e8e8; background: #0d1117; }
+    a { color: #79b8ff; }
+    code, pre { background: #161b22; color: #c9d1d9; }
+    .card { background: #161b22; border-color: #30363d; }
+  }
+  h1 { font-size: 1.8em; margin-bottom: 0; }
+  h2 { font-size: 1.15em; margin-top: 2em; }
+  .lede { color: #666; margin-top: 0.2em; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+  .card { padding: 14px 16px; border: 1px solid #e1e4e8; border-radius: 8px;
+          background: #fff; }
+  .card h3 { margin: 0 0 6px; font-size: 1em; }
+  .card p { margin: 0; font-size: 0.92em; color: #555; }
+  @media (prefers-color-scheme: dark) { .card p { color: #8b949e; } }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+         font-size: 0.92em; padding: 1px 4px; background: #f0f0f0;
+         border-radius: 3px; }
+  pre { padding: 12px; background: #f0f0f0; border-radius: 6px;
+        overflow-x: auto; font-size: 0.88em; }
+  footer { margin-top: 4em; font-size: 0.85em; color: #888;
+           border-top: 1px solid #e1e4e8; padding-top: 1em; }
+</style>
+</head>
+<body>
+
+<h1>solar-system-db</h1>
+<p class="lede">A queryable catalogue of known solar-system objects — planets,
+moons, dwarf planets, asteroids, comets, TNOs, centaurs, and rings. <strong>For
+astronomy, science education, sci-fi worldbuilding, and model-building. Not
+astrology.</strong></p>
+
+<div class="grid">
+  <a class="card" href="/docs">
+    <h3>📡 REST API</h3>
+    <p>Read-only HTTP/JSON. Swagger UI &amp; OpenAPI spec.</p>
+  </a>
+  <a class="card" href="/mcp">
+    <h3>🤖 MCP endpoint</h3>
+    <p>Connect AI agents directly (streamable HTTP).</p>
+  </a>
+  <a class="card" href="https://github.com/wizzouk2/solar-system-db">
+    <h3>📦 GitHub repo</h3>
+    <p>Source, schema, populate scripts. Clone &amp; run locally.</p>
+  </a>
+  <a class="card" href="/api/v1/stats">
+    <h3>📊 Stats</h3>
+    <p>Total counts, last refresh timestamp.</p>
+  </a>
+</div>
+
+<h2>Quick examples</h2>
+<pre>curl /api/v1/planets/Saturn/moons
+curl /api/v1/objects/1P/Halley
+curl '/api/v1/positions/Earth?date=2030-01-01'
+curl '/api/v1/search?q=Halley'</pre>
+
+<h2>Data sources</h2>
+<p>Everything is sourced from public-domain catalogues:</p>
+<ul>
+  <li><a href="https://ssd.jpl.nasa.gov/">NASA JPL Solar System Dynamics</a> — planets, moons, fact sheets</li>
+  <li><a href="https://ssd-api.jpl.nasa.gov/doc/sbdb.html">JPL Small-Body Database</a> — asteroids, comets, TNOs</li>
+  <li><a href="https://www.minorplanetcenter.net/">IAU Minor Planet Center</a> — named-asteroid &amp; periodic-comet lists</li>
+  <li><a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/">NASA Planetary Fact Sheets</a> — physical properties</li>
+</ul>
+<p>Refreshed nightly from upstream. Schema, source, and licence info: see the
+<a href="https://github.com/wizzouk2/solar-system-db">GitHub repo</a>.</p>
+
+<footer>
+solar-system-db is MIT-licensed. Upstream data is NASA public-domain plus
+freely-redistributable IAU MPC. No tracking, no analytics, no auth — public
+and read-only by design.
+</footer>
+
+</body>
+</html>

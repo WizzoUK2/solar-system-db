@@ -1,0 +1,24 @@
+[project]
+name = "solar-system-db-mcp"
+version = "0.1.0"
+description = "MCP server for the solar-system-db catalogue (astronomy, not astrology)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "mcp>=1.0.0",
+    "solar-system-db",
+]
+
+[project.scripts]
+solar-system-db-mcp = "server:main"
+
+[tool.uv.sources]
+solar-system-db = { path = "..", editable = true }
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["server"]

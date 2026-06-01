@@ -1,0 +1,52 @@
+# solar-system-db reverse proxy.
+#
+# By default Caddy will request a Let's Encrypt cert for $PUBLIC_HOSTNAME when
+# bound to 80/443. If you're putting this behind Cloudflare Tunnel, set
+# `auto_https off` and Cloudflare handles TLS — see README, "Hosting it publicly".
+
+{
+	# Set in .env: PUBLIC_HOSTNAME=solar.example.com
+	# Uncomment for tunnel-only deployments:
+	# auto_https off
+	admin off
+}
+
+{$PUBLIC_HOSTNAME:localhost} {
+	encode gzip zstd
+
+	# REST API (OpenAPI/Swagger UI at /docs, ReDoc at /redoc)
+	handle_path /api/* {
+		rewrite * /api{uri}
+		reverse_proxy rest-api:8003
+	}
+	handle /docs* {
+		reverse_proxy rest-api:8003
+	}
+	handle /redoc* {
+		reverse_proxy rest-api:8003
+	}
+	handle /openapi.json {
+		reverse_proxy rest-api:8003
+	}
+
+	# MCP streamable-HTTP endpoint
+	handle /mcp* {
+		reverse_proxy mcp-server:8002
+	}
+
+	# Landing page (everything else)
+	handle {
+		root * /srv
+		file_server
+	}
+
+	header {
+		# Conservative security headers; no PII to leak here, but good hygiene
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# CORS — read-only, public; allow any browser to call the API
+		Access-Control-Allow-Origin "*"
+		Access-Control-Allow-Methods "GET, OPTIONS"
+		Access-Control-Allow-Headers "Content-Type"
+	}
+}
